@@ -80,7 +80,9 @@ module "data_factory" {
   environment          = var.environment
   data_factory_name    = var.data_factory_name
   storage_account_id   = module.storage_account_datalake.storage_account_id
+  storage_account_name = module.storage_account_datalake.storage_account_name
   key_vault_id         = module.key_vault.key_vault_id
+  key_vault_uri        = module.key_vault.key_vault_uri
 
   tags = azurerm_resource_group.main.tags
 

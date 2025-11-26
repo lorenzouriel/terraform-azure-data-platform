@@ -1,5 +1,9 @@
-# Azure Data Platform - Terraform Infrastructure
+# Azure Data Platform with Terraform
 This project provides a complete Infrastructure-as-Code (IaC) setup for deploying a comprehensive Azure data platform using Terraform. It includes multiple data services and follows best practices for modularity, maintainability, and environment management.
+
+<div align="center">
+  <img src="docs/architecture.png" alt="architecture">
+</div>
 
 ## Project Structure
 ```bash
@@ -26,7 +30,7 @@ azure-data-platform-terraform/
 ## Components
 ### Storage Account (Data Lake)
 - **Purpose**: Hierarchical namespace storage for data ingestion and processing
-- **Features**: GRS replication, private containers, network rules
+- **Features**: LRS replication, private containers, network rules
 - **Containers**: Raw, Silver, Bronze, Gold
 
 ### Key Vault
@@ -128,7 +132,7 @@ Key values to update:
 terraform validate
 
 # Plan changes
-terraform plan -var-file="dev.tfvars" -out=dev.tfplan
+terraform plan -var-file="dev.tfvars" -out="dev.tfplan"
 
 # Apply configuration
 terraform apply dev.tfplan
@@ -151,49 +155,6 @@ terraform apply -var-file="envs/staging/terraform.tfvars"
 terraform apply -var-file="envs/prod/terraform.tfvars"
 ```
 
-## Managing Credentials
-
-### Important: SQL Admin Passwords
-
-The Synapse SQL admin password should not be stored in version control. Use one of these approaches:
-
-**Option 1: Environment Variables**
-```bash
-export TF_VAR_synapse_sql_admin_password="YourStrongPassword123!"
-terraform apply -var-file="dev.tfvars"
-```
-
-**Option 2: Terraform Variable Prompt**
-Remove password from .tfvars file:
-```bash
-terraform apply -var-file="dev.tfvars" -var "synapse_sql_admin_password=?password?"
-```
-
-**Option 3: Key Vault Integration**
-Use Key Vault to store and retrieve passwords before applying.
-
-## Outputs
-
-After successful deployment, Terraform will output:
-
-```
-resource_group_id                          - ID of the resource group
-resource_group_name                        - Name of the resource group
-storage_account_id                         - Storage account ID
-storage_account_name                       - Storage account name
-storage_account_primary_blob_endpoint       - Blob endpoint URL
-key_vault_id                                - Key Vault ID
-key_vault_uri                               - Key Vault URI
-event_hub_namespace_id                      - Event Hub namespace ID
-event_hub_namespace_connection_string       - Event Hub connection string
-data_factory_id                             - Data Factory ID
-data_factory_name                           - Data Factory name
-databricks_workspace_id                     - Databricks workspace ID
-databricks_workspace_url                    - Databricks workspace URL
-synapse_workspace_id                        - Synapse workspace ID
-synapse_workspace_connectivity_endpoints    - Synapse endpoints
-```
-
 ## Common Operations
 
 ### View Current State
@@ -210,7 +171,6 @@ terraform apply -target=module.storage_account_datalake -var-file="dev.tfvars"
 ```
 
 ### Destroy All Resources
-
 ```bash
 # Backup your state first
 terraform state pull > backup.tfstate
@@ -220,67 +180,13 @@ terraform destroy -var-file="dev.tfvars"
 ```
 
 ### Destroy Specific Environment
-
 ```bash
 # Only destroy dev environment
 terraform destroy -var-file="envs/dev/terraform.tfvars"
 ```
 
-## Best Practices Implemented
-
-1. **Modularity**: Each service is in its own module for reusability
-2. **Variable Validation**: Input variables have validation rules
-3. **Tagging**: All resources are tagged with environment and project metadata
-4. **Security**: 
-   - Managed identities for service authentication
-   - Key Vault for secrets management
-   - Network rules on storage and Key Vault
-   - Sensitive variable marking
-5. **State Management**: Remote state configured in Azure Storage
-6. **Error Handling**: Proper resource dependencies defined
-
-## Troubleshooting
-
-### Name Already Exists
-
-Some Azure resources must have globally unique names. If you get a "name already exists" error:
-
-Update the resource name in `terraform.tfvars`:
-```hcl
-storage_account_name = "datalakestorageunique123"
-```
-
-### Insufficient Permissions
-
-If you get permission errors, ensure your user/service principal has:
-- Subscription Contributor role
-- Directory.Read.All or higher for Azure AD operations
-
-```bash
-az role assignment create --assignee <object-id> --role Contributor \
-  --scope /subscriptions/<subscription-id>
-```
-
-### State Lock
-
-If Terraform is locked:
-```bash
-terraform force-unlock <lock-id>
-```
-
-## Cost Optimization
-
-The default configuration includes relatively high-tier resources. To reduce costs:
-
-1. **Synapse SQL Pool**: Change SKU from DW100c to DW100c (or pause when not in use)
-2. **Databricks**: Use Standard tier instead of Premium
-3. **Event Hub**: Use Basic tier instead of Standard
-4. **Storage**: Consider LRS instead of GRS for non-critical environments
-
 ## Monitoring and Logs
-
 After deployment, set up monitoring:
-
 ```bash
 # Create alert rules in Azure Portal for:
 # - Storage account metrics
@@ -289,26 +195,3 @@ After deployment, set up monitoring:
 # - Synapse query performance
 ```
 
-## Security Considerations
-
-1. Never commit `terraform.tfvars` with real credentials to version control
-2. Use `.gitignore` to exclude sensitive files:
-   ```
-   *.tfvars
-   *.tfstate*
-   .terraform/
-   ```
-3. Enable audit logging on Key Vault and Storage accounts
-4. Regularly rotate SQL admin password
-5. Implement RBAC for resource access
-6. Use private endpoints for production workloads
-
-## Support and Documentation
-
-- [Terraform Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
-- [Azure Data Platform Architecture](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/data/enterprise-bi-synapse)
-- [Terraform Best Practices](https://www.terraform.io/docs/language/state/locking.html)
-
-## License
-
-MIT License - See LICENSE file for details
