@@ -1,0 +1,31 @@
+# Production Environment Configuration
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+tenant_id       = "00000000-0000-0000-0000-000000000000"
+object_id       = "00000000-0000-0000-0000-000000000000"
+
+project_name = "dataplatform"
+environment  = "prod"
+location     = "eastus"
+
+# Storage Account
+storage_account_name = "dlstorageprod"
+container_names      = ["raw", "bronze", "silver", "gold"]
+
+# Key Vault
+key_vault_name = "datalakekv-prod"
+
+# Event Hub
+event_hub_namespace_name = "dataplatform-eh-prod"
+event_hub_names          = ["data-ingestion", "alerts", "monitoring", "audit"]
+
+# Data Factory
+data_factory_name = "dataplatform-adf-prod"
+
+# Databricks
+databricks_workspace_name = "dataplatform-databricks-prod"
+
+# Synapse
+synapse_workspace_name     = "dataplatform-synapse-prod"
+synapse_sql_admin_login    = "sqladmin"
+synapse_sql_admin_password = "ProdPassword@123456"  # Use a strong, unique password - consider using Key Vault

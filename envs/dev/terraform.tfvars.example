@@ -1,0 +1,31 @@
+# Dev Environment Configuration
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+tenant_id       = "00000000-0000-0000-0000-000000000000"
+object_id       = "00000000-0000-0000-0000-000000000000"
+
+project_name = "dataplatform"
+environment  = "dev"
+location     = "eastus"
+
+# Storage Account
+storage_account_name = "dlstoragedev"
+container_names      = ["raw", "bronze", "silver", "gold"]
+
+# Key Vault
+key_vault_name = "datalakekv-dev"
+
+# Event Hub
+event_hub_namespace_name = "dataplatform-eh-dev"
+event_hub_names          = ["data-ingestion", "alerts"]
+
+# Data Factory
+data_factory_name = "dataplatform-adf-dev"
+
+# Databricks
+databricks_workspace_name = "dataplatform-databricks-dev"
+
+# Synapse
+synapse_workspace_name     = "dataplatform-synapse-dev"
+synapse_sql_admin_login    = "sqladmin"
+synapse_sql_admin_password = "DevPassword@123456"  # Use a strong password

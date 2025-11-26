@@ -1,0 +1,31 @@
+# Staging Environment Configuration
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+tenant_id       = "00000000-0000-0000-0000-000000000000"
+object_id       = "00000000-0000-0000-0000-000000000000"
+
+project_name = "dataplatform"
+environment  = "staging"
+location     = "eastus"
+
+# Storage Account
+storage_account_name = "dlstoragestaging"
+container_names      = ["raw", "bronze", "silver", "gold"]
+
+# Key Vault
+key_vault_name = "datalakekv-staging"
+
+# Event Hub
+event_hub_namespace_name = "dataplatform-eh-staging"
+event_hub_names          = ["data-ingestion", "alerts", "monitoring"]
+
+# Data Factory
+data_factory_name = "dataplatform-adf-staging"
+
+# Databricks
+databricks_workspace_name = "dataplatform-databricks-staging"
+
+# Synapse
+synapse_workspace_name     = "dataplatform-synapse-staging"
+synapse_sql_admin_login    = "sqladmin"
+synapse_sql_admin_password = "StagingPassword@123456"  # Use a strong password
